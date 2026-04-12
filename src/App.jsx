@@ -116,7 +116,7 @@ const DATA = {
   hero: {
     name: "Aditya_Patil",
     role: "Junior Data Analyst / MIS Executive",
-    bio: "Data Analyst with hands-on experience in Python, SQL, and Power BI, specializing in sales and customer data analysis. Completed a 6-month internship delivering dashboards and trend analysis to support business decisions. Strong foundation in data cleaning, EDA, and performance reporting.",
+    bio: "Data Analyst aspirant currently working as an MIS Executive, with hands-on experience in Python, MySQL, Power BI, and Google Sheets. Completed a Data Analyst internship building dashboards and performing data analysis. Skilled in data cleaning, EDA, and report automation, aiming to transition into a Data Analyst role.",
   },
   experience: [
     {
