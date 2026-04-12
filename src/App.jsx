@@ -120,13 +120,13 @@ const DATA = {
   },
   experience: [
     {
-      role: "Admin Executive",
-      company: "Vijsag Rental Solution",
+      role: "MIS Executive",
+      company: "Trident Engineers",
       duration: "2026 - Present",
       achievements: [
-        "Managed and updated customer records and transaction data in CRM system.",
-        "Maintained structured data for order tracking and operational reporting.",
-        "Assisted team in retrieving customer and order data for internal use."
+        "Analyzed data to track delays, vendor performance, and operational efficiency",
+        "Automated data processing tasks using advanced formulas (MAP-LAMBDA, ARRAYFORMULA, XLOOKUP, QUERY, etc.)",
+        "Developed dashboards and reports for management decision-making"
       ]
     },
     {
