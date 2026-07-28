@@ -221,7 +221,7 @@ export default function App() {
   const scrollProgress = useScrollProgress();
 
   // 🔑 Web3Forms: get your free key at https://web3forms.com (put it below)
-  const WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+  const WEB3FORMS_KEY = 'ff4bb36c-d353-49ca-826a-77f6d03bcc6c';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
