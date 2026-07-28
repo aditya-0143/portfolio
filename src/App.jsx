@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Github, Linkedin, Mail, ExternalLink, Moon, Sun, 
   ChevronRight, Terminal, Database, Code2, Layout, 
-  Briefcase, GraduationCap, Award, Phone, ArrowUpRight
+  Briefcase, GraduationCap, Award, Phone, ArrowUpRight,
+  Menu, X, Download, Send, Loader2, CheckCircle
 } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 
 // --- CUSTOM HOOKS ---
 
@@ -114,7 +116,7 @@ const SectionHeading = ({ title, subtitle }) => (
 
 const DATA = {
   hero: {
-    name: "Aditya_Patil",
+    name: "Aditya Patil",
     role: "Junior Data Analyst / MIS Executive",
     bio: "Data Analyst aspirant currently working as an MIS Executive, with hands-on experience in Python, MySQL, Power BI, and Google Sheets. Completed a Data Analyst internship building dashboards and performing data analysis. Skilled in data cleaning, EDA, and report automation, aiming to transition into a Data Analyst role.",
   },
@@ -178,7 +180,7 @@ const DATA = {
       items: ["Pandas", "Numpy", "Matplotlib", "Seaborn"]
     },
     {
-      category: "Visulisation",
+      category: "Visualization",
       icon: <Layout className="w-5 h-5" />,
       items: ["Power BI", "Excel"]
     },
@@ -199,7 +201,7 @@ const DATA = {
     year: "2025"
   },
   certifications: [
-    { name: "Data Analytics and Data Science", provider: "Ethan`s Tech, Pune" }
+    { name: "Data Analytics and Data Science", provider: "Ethan's Tech, Pune" }
   ],
   contact: {
     email: "mr.aditya0110@gmail.com",
@@ -213,7 +215,41 @@ const DATA = {
 
 export default function App() {
   const [isDark, setIsDark] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [formStatus, setFormStatus] = useState('idle'); // idle | sending | success | error
   const scrollProgress = useScrollProgress();
+
+  // 🔑 Web3Forms: get your free key at https://web3forms.com (put it below)
+  const WEB3FORMS_KEY = 'YOUR_ACCESS_KEY_HERE';
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) return;
+    setFormStatus('sending');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          subject: `Portfolio contact from ${form.name}`,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFormStatus('success');
+        setForm({ name: '', email: '', message: '' });
+      } else {
+        setFormStatus('error');
+      }
+    } catch {
+      setFormStatus('error');
+    }
+  };
 
   useEffect(() => {
     // Smooth scrolling via CSS
@@ -276,13 +312,39 @@ export default function App() {
                 </a>
               ))}
             </div>
-            <button 
-              onClick={() => setIsDark(!isDark)}
-              className="p-2 rounded-full bg-white/20 dark:bg-white/5 hover:bg-white/40 dark:hover:bg-white/10 transition-colors border border-white/20 dark:border-white/5"
-              aria-label="Toggle Dark Mode"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-yellow-300" /> : <Moon className="w-4 h-4 text-slate-700" />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setIsDark(!isDark)}
+                className="p-2 rounded-full bg-white/20 dark:bg-white/5 hover:bg-white/40 dark:hover:bg-white/10 transition-colors border border-white/20 dark:border-white/5"
+                aria-label="Toggle Dark Mode"
+              >
+                {isDark ? <Sun className="w-4 h-4 text-yellow-300" /> : <Moon className="w-4 h-4 text-slate-700" />}
+              </button>
+              <button
+                onClick={() => setMenuOpen((v) => !v)}
+                className="md:hidden p-2 rounded-full bg-white/20 dark:bg-white/5 hover:bg-white/40 dark:hover:bg-white/10 transition-colors border border-white/20 dark:border-white/5"
+                aria-label="Toggle Menu"
+                aria-expanded={menuOpen}
+              >
+                {menuOpen ? <X className="w-4 h-4 text-slate-700 dark:text-white" /> : <Menu className="w-4 h-4 text-slate-700 dark:text-white" />}
+              </button>
+            </div>
+
+            {/* Mobile dropdown menu */}
+            {menuOpen && (
+              <div className="md:hidden absolute top-full left-0 right-0 mt-2 rounded-2xl glass-nav border border-white/20 dark:border-white/10 shadow-lg p-4 flex flex-col gap-2">
+                {['Experience', 'Projects', 'Skills', 'Contact'].map((item) => (
+                  <a
+                    key={item}
+                    href={`#${item.toLowerCase()}`}
+                    onClick={() => setMenuOpen(false)}
+                    className="px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-white/30 dark:hover:bg-white/5 transition-colors text-sm font-medium"
+                  >
+                    {item}
+                  </a>
+                ))}
+              </div>
+            )}
           </nav>
 
           <main className="w-full max-w-6xl px-6 flex flex-col items-center">
@@ -320,6 +382,10 @@ export default function App() {
                 </a>
                 <a href="#contact" className="px-8 py-4 rounded-full font-medium border border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2">
                   Contact Me
+                </a>
+                <a href="/Aditya_Patil_Resume.pdf" download className="px-8 py-4 rounded-full font-medium border border-slate-300 dark:border-white/20 hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-slate-700 dark:text-slate-300 flex items-center justify-center gap-2">
+                  <Download className="w-4 h-4" />
+                  Resume
                 </a>
               </RevealWrapper>
             </section>
@@ -489,7 +555,52 @@ export default function App() {
                   <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12 font-light relative z-10">
                     Whether you have a project in mind or just want to chat about technology, my inbox is always open.
                   </p>
-                  
+
+                  {/* --- CONTACT FORM (Web3Forms) --- */}
+                  <form onSubmit={handleSubmit} className="max-w-xl mx-auto text-left relative z-10 mb-12 space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Your name"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        required
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                      />
+                      <input
+                        type="email"
+                        placeholder="Your email"
+                        value={form.email}
+                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        required
+                        className="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Your message"
+                      rows={4}
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      required
+                      className="w-full px-4 py-3 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
+                    />
+                    <button
+                      type="submit"
+                      disabled={formStatus === 'sending' || formStatus === 'success'}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-medium hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {formStatus === 'sending' && <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</>}
+                      {formStatus === 'success' && <><CheckCircle className="w-4 h-4" /> Message sent!</>}
+                      {(formStatus === 'idle' || formStatus === 'error') && <><Send className="w-4 h-4" /> Send Message</>}
+                    </button>
+                    {formStatus === 'error' && (
+                      <p className="text-sm text-red-500 text-center">Something went wrong. Please email me directly.</p>
+                    )}
+                    {formStatus === 'success' && (
+                      <p className="text-sm text-green-500 text-center">Thanks! I'll get back to you soon.</p>
+                    )}
+                  </form>
+
                   <div className="flex flex-wrap justify-center gap-6 relative z-10">
                     <a href={`mailto:${DATA.contact.email}`} className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 hover:-translate-y-1 hover:shadow-xl hover:border-blue-500/50 transition-all text-slate-700 dark:text-slate-200 font-medium group">
                       <div className="p-2 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-500 group-hover:scale-110 transition-transform">
@@ -528,6 +639,7 @@ export default function App() {
 
         </div>
       </div>
+      <Analytics />
     </div>
   );
 }
